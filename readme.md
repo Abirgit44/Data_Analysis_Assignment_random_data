@@ -6,6 +6,7 @@
   I changed the workbook file format to csv from xlsx.__
   >View the datasets given here: [Data_Analysis_Dataset](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/tree/master/Data_Given_for_Assignment)
 
+
 ## SQL Part
 __**𝑺𝑸𝑳 𝒒𝒖𝒆𝒓𝒚 𝒇𝒐𝒓 𝒅𝒂𝒕𝒂 𝒂𝒏𝒂𝒍𝒚𝒔𝒊𝒔:**__
 
@@ -34,7 +35,8 @@ UPDATE house_data SET zip_code=(select distinct(zip_code) from house_data where 
 select*from house_data;
 ```
 __**At first I checked the Entity Relationship Diagram of the given dataset; here is a pic of that:**__
-![ERD of used random data](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/ERD_of_Database.png)
+![image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/assets/111905512/9dcfa2d1-acd0-46ec-ae80-e9f8f04d8425)
+
 
 **Now we will check details about certain type of homes**
 __Also will be creating subqueries to make more classifications__
@@ -46,6 +48,7 @@ __Also will be creating subqueries to make more classifications__
   GROUP BY city,bed
   ORDER BY bed desc;
   ```
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/sing_fam_total_in_each_city_with_bednbath.csv)
 
 >SECOND Query answers the issue of finding total number of Land houses in each city in New Jersey having atleast 1 bed and bath:
 ```sql
@@ -54,6 +57,7 @@ __Also will be creating subqueries to make more classifications__
   GROUP BY city,bed
   ORDER BY bed desc;
 ```
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/land_total_in_each_city_with_bednbath.csv)
 
 >THIRD Query answers the issue of finding total number of MULTI Family houses in each city in New Jersey having atleast 1 bed and bath:
 ```sql
@@ -62,6 +66,7 @@ WHERE home_type='Multi Family' and bath>0 and bed>0
 GROUP BY city,bed
 ORDER BY bed desc;
 ```
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/mul_fam_total_in_each_city_with_bednbath.csv)
 
 > The following queries answer the number of total houses with 3 different kind of homes:
   ```sql
@@ -78,6 +83,8 @@ ORDER BY bed desc;
   from house_data)
   GROUP BY city,home_type;
   ```
+ANSWER: 
+[Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/houses_preferable_for_business.csv)
 
 ### Amenities check
 ```sql
@@ -112,16 +119,21 @@ GROUP BY city,home_type;
   select*from zip_data 
   order by zip_code_population desc;
   ```
-
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/zip_data_descpopulation.csv)
 
 >__**Some analysis on date data**__
   ```sql
     ---highest actual sold value first
     select*from date_data where status='Sold' ORDER BY actual_sold_price desc;
+  ```
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/date_data_highest_actl_sold_val_first_and_sld.csv)
+  ```sql
     ---newest actual sold value first
     select*from date_data where status='Sold' ORDER BY sold_date desc;
+  ```
+ANSWER: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/date_data_newest_first_and_sld.csv)
   
-
+ ```sql
     --latest sale date and highest actual sold amount:
     select sold_date from date_data where status='Sold' and sold_date =(SELECT sold_date from date_data ORDER BY sold_date desc LIMIT 1);
     --output:"2021-03-05"
@@ -165,6 +177,7 @@ __**𝙉𝒐𝙬 𝙬𝒆 𝒘𝙞𝒍𝙡 𝙨𝒕𝙖𝒓𝙩 𝙟𝒐𝙞𝒏
   JOIN
       date_data d ON d.id=h.id;
 ```
+Answer: [Query Output](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/All_SQL_Findings_except_Joining/ALL_TABLE_INSIGHT_TOGETHER.csv)
 
 __**Other findings:**__ 
 >1. Average listing price by property type:
