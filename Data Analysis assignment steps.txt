@@ -1,0 +1,10 @@
+Data Analysis assignment steps:
+
+>first I made 3 worksheets into 3 distinct workbook;
+>then I opened my postgresql server in PGAdmin4;
+>in the zip_data workbook I found that Hammington city had duplicate zip value(8037) error but having diff population so I continued with the first entered data!
+>I created 3 tables in SQL similar to the 3 workbooks and matched the column names and gave excel data proper shapes.
+>I changed the workbook file format to csv from xlsx
+>I imported the data from the csv files
+>After successfull import I generated the ERD to visualize the current connection in between tables.
+>Now Analysis will start.

@@ -1,0 +1,292 @@
+𝑺𝑸𝑳 𝒒𝒖𝒆𝒓𝒚 𝒇𝒐𝒓 𝒅𝒂𝒕𝒂 𝒂𝒏𝒂𝒍𝒚𝒔𝒊𝒔 𝒖𝒏𝒕𝒊𝒍 𝒏𝒐𝒘:
+
+create table zip_data(city varchar(20),	state_name varchar(20),	zip_code integer UNIQUE,	zip_code_population integer)
+CREATE TABLE house_data(id VARCHAR(30) PRIMARY KEY,home_type VARCHAR(30),bed integer,bath integer,play_ground varchar(10),swimming_tank varchar(10),acre_lot float4,city varchar(20),state_name varchar(20),zip_code integer,house_size integer, foreign key(zip_code) REFERENCES zip_data(zip_code))
+CREATE TABLE date_data(id VARCHAR(30),	listing_date date,	listing_price integer,	sold_date date,	actual_sold_price integer,	status varchar(15),foreign key(id) REFERENCES house_data(id))
+
+
+
+select*from zip_data;
+select*from house_data;
+select*from date_data;
+
+--searching for duplicate/unforced error values:
+
+select id,city, state_name from house_data where zip_code=8037;
+---updating the hudson county zip_code
+UPDATE house_data SET zip_code=(select distinct(zip_code) from house_data where city='Hudson County' and zip_code<>8037) where city='Hudson County' and zip_code=8037;
+---select zip_code from house_data where city= 'Hudson County';
+---so pincode got updated
+
+select*from house_data;
+
+---now we will check details about certain type of homes 
+---also will be creating subqueries to make more classifications
+
+--FIRST Query answers the issue of finding total number of Single Family houses in each city in New Jersey having atleast 1 bed and bath:
+SELECT COUNT(id),city,bed FROM house_data 
+WHERE home_type='Single Family' and bath>0 and bed>0
+GROUP BY city,bed
+ORDER BY bed desc;
+
+--SECOND Query answers the issue of finding total number of Land houses in each city in New Jersey having atleast 1 bed and bath:
+SELECT COUNT(id),city,bed FROM house_data 
+WHERE home_type='Land' and bath>0 and bed>0
+GROUP BY city,bed
+ORDER BY bed desc;
+
+--THIRD Query answers the issue of finding total number of MULTI Family houses in each city in New Jersey having atleast 1 bed and bath:
+SELECT COUNT(id),city,bed FROM house_data 
+WHERE home_type='Multi Family' and bath>0 and bed>0
+GROUP BY city,bed
+ORDER BY bed desc;
+
+--The following queries answer the number of total houses with 3 different kind of homes:
+select COUNT(*) from house_data WHERE home_type='Single Family';
+---output: 169
+select COUNT(*) from house_data WHERE home_type='Land';
+---output: 162
+select COUNT(*) from house_data WHERE home_type='Multi Family';
+---output: 173
+
+--one thing can be important i.e. for people thinking about opening business or creating office, they might choose the houses with no bed, atleast 1 bath and more than avg area:
+select COUNT(id),home_type,city from house_data where bath>1 and bed=0 and house_size > (SELECT avg(house_size) from house_data)
+GROUP BY city,home_type
+
+--amenities check
+---With everything:
+select COUNT(id),home_type,city from house_data where bath>0 and bed>0 and play_ground='Y' and swimming_tank='Y'
+GROUP BY city,home_type;
+--total:92
+---With everything except bath:
+select COUNT(id),home_type,city from house_data where bath=0 and bed>0 and play_ground='Y' and swimming_tank='Y'
+GROUP BY city,home_type;
+--total:20
+---With everything except bed:
+select COUNT(id),home_type,city from house_data where bath>0 and bed=0 and play_ground='Y' and swimming_tank='Y'
+GROUP BY city,home_type;
+--total:13
+---With everything except play ground:
+select COUNT(id),home_type,city from house_data where bath>0 and bed>0 and play_ground='N' and swimming_tank='Y'
+GROUP BY city,home_type;
+--total:77
+---With everything except swimming tank:
+select COUNT(id),home_type,city from house_data where bath>0 and bed>0 and play_ground='Y' and swimming_tank='N'
+GROUP BY city,home_type;
+--total:93
+
+--zipdata analysis
+select*from zip_data 
+order by zip_code_population desc;
+
+
+--some analysis on date data
+---highest actual sold value first
+select*from date_data where status='Sold' ORDER BY actual_sold_price desc;
+---newest actual sold value first
+select*from date_data where status='Sold' ORDER BY sold_date desc;
+
+--latest sale date and highest actual sold amount:
+select sold_date from date_data where status='Sold' and sold_date =(SELECT sold_date from date_data ORDER BY sold_date desc LIMIT 1);
+--output:"2021-03-05"
+select actual_sold_price from date_data where status='Sold' order by actual_sold_price desc limit 1;
+--output:499481
+
+--total sold and pending figures
+select count(*) from date_data where status='Sold';
+--output:249
+select count(*) from date_data where status='Pending';
+--output:255
+
+
+𝙉𝒐𝙬 𝙬𝒆 𝒘𝙞𝒍𝙡 𝙨𝒕𝙖𝒓𝙩 𝙟𝒐𝙞𝒏𝙞𝒏𝙜:
+
+---fIRST JOIN ALL MAJOR INFORMATIONs together:
+
+SELECT
+    DISTINCT(h.id),
+    h.home_type,
+    h.bed,
+    h.bath,
+    h.play_ground,
+    h.swimming_tank,
+    h.acre_lot,
+    h.house_size,
+    z.city,
+    z.state_name,
+    z.zip_code,
+    z.zip_code_population,
+ d.listing_date,
+    d.listing_price,
+    d.sold_date,
+    d.actual_sold_price,
+    d.status
+FROM
+    zip_data z
+JOIN
+    house_data h ON h.city = z.city
+JOIN
+    date_data d ON d.id=h.id;
+
+-- 1. Average listing price by property type
+SELECT
+    h.home_type,
+    AVG(d.listing_price) AS avg_listing_price
+FROM
+    house_data h JOIN date_data d on d.id=h.id
+GROUP BY
+    h.home_type;
+
+-- 2. Total actual sold price by city
+SELECT
+    h.city,
+    SUM(d.actual_sold_price) AS total_sold_price
+FROM
+    date_data d
+JOIN
+    house_data h ON h.id=d.id
+GROUP BY
+    h.city;
+
+-- 3. Property type distribution by state and city
+SELECT
+    z.state_name,
+    z.city,
+    h.home_type,
+    COUNT(*) AS property_count
+FROM
+    house_data h
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.state_name,
+    z.city,
+    h.home_type;
+
+--4. Average listing price by city and state:
+SELECT
+    z.state_name,
+    z.city,
+    AVG(d.listing_price) AS avg_listing_price
+FROM
+    date_data d
+JOIN
+    house_data h ON d.id = h.id
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.state_name,
+    z.city;
+
+-- 5. Number of properties with a playground by city
+SELECT
+    z.state_name,
+    z.city,
+    SUM(CASE WHEN h.play_ground = 'Y' THEN 1 ELSE 0 END) AS playground_count
+FROM
+    house_data h
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.state_name,
+    z.city;
+
+-- 6. Average listing price by year
+SELECT
+    EXTRACT(YEAR FROM d.listing_date) AS listing_year,
+    AVG(d.listing_price) AS avg_listing_price
+FROM
+    date_data d
+JOIN
+    house_data h ON d.id = h.id
+GROUP BY
+    EXTRACT(YEAR FROM d.listing_date)
+ORDER BY
+    listing_year;
+
+-- 7. Property count and average property size by zip code
+SELECT
+    z.zip_code,
+    COUNT(*) AS property_count,
+    AVG(h.house_size) AS avg_property_size
+FROM
+    house_data h
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.zip_code
+ORDER BY
+    z.zip_code;
+
+-- 8. Average listing price by city and day of the week
+SELECT
+    z.city,
+    EXTRACT(DOW FROM d.listing_date) AS day_of_week,
+    AVG(d.listing_price) AS avg_listing_price
+FROM
+    date_data d
+JOIN
+    house_data h ON d.id = h.id
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.city,
+    day_of_week
+ORDER BY
+    z.city,
+    day_of_week;
+
+-- 9. Property type distribution by month and year
+SELECT
+    EXTRACT(MONTH FROM d.listing_date) AS month,
+    EXTRACT(YEAR FROM d.listing_date) AS year,
+    h.home_type,
+    COUNT(*) AS property_count
+FROM
+    date_data d
+JOIN
+    house_data h ON d.id = h.id
+GROUP BY
+    EXTRACT(MONTH FROM d.listing_date),
+    EXTRACT(YEAR FROM d.listing_date),
+    h.home_type
+ORDER BY
+    year,
+    month;
+
+
+-- 10. City with the highest average property size and its population
+SELECT
+    z.city,
+    z.state_name,
+    AVG(h.house_size) AS avg_property_size,
+    z.zip_code_population
+FROM
+    house_data h
+JOIN
+    zip_data z ON h.zip_code = z.zip_code
+GROUP BY
+    z.city,
+    z.state_name,
+    z.zip_code_population
+ORDER BY
+    avg_property_size DESC
+LIMIT 1;
+
+
+/*
+Summary of Insights:
+--------------------
+
+1. Average listing price by property type.
+2. Total actual sold price by state.
+3. Property type distribution by state and city.
+4. Average listing price by city and state.
+5. Number of properties with a playground by city.
+6. Average listing price by year.
+7. Property count and average property size by zip code.
+8. Average listing price by city and day of the week.
+9. Property type distribution by month and year.
+10. City with the highest average property size and its population.
+
+These insights were obtained through joining the "Date Data" (d), "House Data" (h), and "Zip Data" (z) tables.
