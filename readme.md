@@ -498,4 +498,20 @@ Answer:
 |-------------|------------------|-------------------------|---------------------------|
 | "Hammonton" | "New Jersey"     | 1672.3666666666666667   | 23729                     |
 
+## TABLEAU Part
+### Basic steps:
+>First we will connect to the datasets present to be analyzed; then we will check the data. Ignore the null values and continue.
+Extract the data before publishing the dashboard.
+  >>Note: **In my case it is very important to mention that I didn't find something very out of sight to be analyzed and put into dashboard of tableau from the 'zip_data', so I didn't make separate dashboard on that.**
 
+### House_Data Analaysis Dashboard:
+![Dashboard_Image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/House_Data_Findings_Dashboard.png)
+You will find the dashboard at:[Click_me](https://public.tableau.com/app/profile/abir.maiti/viz/House_Data_Findings_Workbook/House_Data_Findings_Dashboard)
+
+### Date_Data Analaysis Dashboard:
+![Dashboard_Image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/Date%20Data%20Key%20findings%20Dashboard.png)
+You will find the dashboard at:[Click_me](https://public.tableau.com/app/profile/abir.maiti/viz/Date_Data_Analysis_Workbook/DateDataKeyfindingsDashboard)
+
+### Data Analaysis Dashboard after joining House, Date and Zip data:
+![Dashboard_Image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/Dashboard_after_joining_tableau.png)
+You will find the dashboard at:[Click_me](https://public.tableau.com/app/profile/abir.maiti/viz/InsightsafterjoiningTables/Dashboard_after_joining)
