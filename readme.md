@@ -534,3 +534,11 @@ You will find the dashboard at:[Click_me](https://public.tableau.com/app/profile
 ### Data Analaysis Dashboard after joining House, Date and Zip data:
 ![Dashboard_Image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/master/Dashboard_after_joining_tableau.png)
 You will find the dashboard at:[Click_me](https://public.tableau.com/app/profile/abir.maiti/viz/InsightsafterjoiningTables/Dashboard_after_joining)
+
+
+### Data Analaysis Dashboard after connecting postgreSQL server to Tableau:
+![Dashboard_Image](https://github.com/Abirgit44/Data_Analysis_Assignment_random_data/blob/9897a0130bc655884b52250b4e8b892eb730c821/House_Size_vs_Margin_in_Sold_Price_postgresql.png)
+You will find the dashboard at:[Click_me](https://public.tableau.com/shared/YSDG6CTKG?:display_count=n&:origin=viz_share_link)
+
+# **THANK YOU FOR READING**
+# 🤗
